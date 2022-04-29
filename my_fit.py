@@ -50,7 +50,7 @@ def getNextVal(rms1, rms2, multiplyval):
         multiplyval += -0.5
     else:
 
-        multiplyval -= 0.5
+        multiplyval += 0.5
     
     return multiplyval
 

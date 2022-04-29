@@ -43,16 +43,16 @@ def rootMinSquare(actuY, dataY):
     rms_error=math.sqrt(sum_diff_square)/len(actuY)
     return rms_error
 
-def getNextVal(rms1, rms2, multiplyval):
+def getNextVal(rms1, rms2, addVal):
 
     if rms1 > rms2:
 
-        multiplyval += -0.5
+        addVal += -0.5
     else:
 
-        multiplyval += 0.5
+        addVal += 0.5
     
-    return multiplyval
+    return addVal
 
 def curveExpFunc(x, a, b, c):
 

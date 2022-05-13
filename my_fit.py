@@ -47,17 +47,19 @@ def getNextVal(rms1, rms2, addVal):
 
     if rms1 > rms2:
 
-        addVal += -0.5
+        addVal += -0.25
     else:
 
-        addVal += 0.5
+        addVal += -0.25
     
     return addVal
 
-def curveExpFunc(x, a, b, c):
+def curveExpFuncUs(x, a, b, c):
+
+    return (b * x + c) * np.log(a)
+def curveExpFuncSciPy(x, a, b, c):
 
     return a ** (b * np.log(x) + c)
-
 
 #Create the graph subplot 
 fig, graph = plt.subplots(2)
@@ -78,53 +80,53 @@ while SalesX[iterator] <= 2008:
     SalesYTill2008 = np.concatenate((SalesYTill2008, [SalesY[iterator]]))   
     iterator += 1
 
-popt, pcov = curve_fit(curveExpFunc, SalesXTill2008, SalesYTill2008)
-graph[0].plot(SalesXTill2008, curveExpFunc(SalesXTill2008, *popt), 'red')
+popt, pcov = curve_fit(curveExpFuncSciPy, SalesXTill2008, SalesYTill2008)
+graph[0].plot(SalesXTill2008, curveExpFuncSciPy(SalesXTill2008, *popt), 'red')
 graph[0].plot(SalesXTill2008, SalesYTill2008, 'blue')
-
-print(rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, *popt)))
 
 #Creating our own curve_fit function
 initA = SalesYTill2008[0]
 initB = 1
 initC = 1
 
-addValA = 4.0
-addValB = 4.0
-addValC = 4.0
+addValA = 1.0
+addValB = 1.0
+addValC = 1.0
 
 aWhile = True
 bWhile = True
 cWhile = True
 while aWhile:
 
-    addValA = getNextVal(rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA + addValA, initB, initC)), addValA)
+    addValA = getNextVal(rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA + addValA, initB, initC)), addValA)
     initA += addValA
 
-    if rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)) < 100:
+    if rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)) < 50:
 
         aWhile = False
 
     while bWhile:
 
-        addValB = getNextVal(rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB + addValB, initC)), addValB)
+        addValB = getNextVal(rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB + addValB, initC)), addValB)
         initB += addValB
 
-        if rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)) < 100:
+        if rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)) < 50:
 
             bWhile = False
 
         while cWhile:
 
-            addValC = getNextVal(rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC + addValC)), addValC)
+            addValC = getNextVal(rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)), rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC + addValC)), addValC)
             initC += addValC
 
-            if rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)) < 100:
+            if rootMinSquare(SalesYTill2008, curveExpFuncUs(SalesXTill2008, initA, initB, initC)) < 50:
 
                 cWhile = False
-
-print(rootMinSquare(SalesYTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC)))
+                
+LogOfSalexXTill2008 = np.log(SalesXTill2008)
+curveExpVal = curveExpFuncUs(SalesXTill2008, initA, initB, initC)
+print(rootMinSquare(SalesXTill2008, curveExpVal))
 print(initA, initB, initC)
-graph[1].plot(SalesXTill2008, curveExpFunc(SalesXTill2008, initA, initB, initC), 'green')
+graph[1].plot(LogOfSalexXTill2008, curveExpVal, 'green')
 #Show the graph
 plt.show()
